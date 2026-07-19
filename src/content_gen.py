@@ -4,6 +4,8 @@ import requests
 
 from . import config, sheets
 
+DISCLOSURE = "As an Amazon Associate I earn from qualifying purchases."
+
 SYSTEM_PROMPT = """You are an expert affiliate marketer and copywriter for Pinterest, Facebook and Instagram.
 
 Generate high-converting, SEO-friendly content for one product. Vary tone across outputs
@@ -75,7 +77,11 @@ def generate(product: dict, recent_titles=None):
         if not result.get(key):
             raise ValueError(f"LLM response missing '{key}'")
     result["pin_title"] = result["pin_title"][:100]
-    result["pin_desc"] = result["pin_desc"][:800]
+    # Amazon Associates requires disclosure in the content itself, not just the
+    # profile bio - appended in code so it can never be dropped by the LLM.
+    result["pin_desc"] = f"{result['pin_desc'][:780]}\n\n{DISCLOSURE}"[:800]
+    result["fb_text"] = f"{result['fb_text']}\n\n{DISCLOSURE}"
+    result["ig_caption"] = f"{result['ig_caption']}\n\n{DISCLOSURE}"
     return result
 
 
