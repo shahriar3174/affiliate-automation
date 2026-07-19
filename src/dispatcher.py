@@ -3,13 +3,11 @@ per run, only when the cadence window has elapsed. Honors the Config 'paused' fl
 from datetime import datetime, timedelta, timezone
 
 from . import config, sheets
-from .publishers import facebook, instagram, pinterest
+from .publishers import zernio
 
-PLATFORMS = {
-    "pinterest": pinterest,
-    "facebook": facebook,
-    "instagram": instagram,
-}
+# Instagram isn't posted directly - it rides on Facebook's native
+# Page-to-Instagram auto-crosspost setting instead of a separate API call.
+PLATFORMS = ["pinterest", "facebook"]
 
 
 def _parse(ts):
@@ -54,7 +52,7 @@ def run():
     rows = sheets.queue_rows()
     now = datetime.now(timezone.utc)
 
-    for platform, module in PLATFORMS.items():
+    for platform in PLATFORMS:
         last = _last_posted(rows, platform)
         if last and now - last < cadence:
             print(f"{platform}: not due (last {last:%H:%M}, cadence {cadence})")
@@ -73,7 +71,7 @@ def run():
             continue
 
         try:
-            post_id = module.publish(item)
+            post_id = zernio.publish(item, platform)
             updates = {}
             if is_repost:
                 updates["repost_count"] = int(item.get("repost_count") or 0) + 1

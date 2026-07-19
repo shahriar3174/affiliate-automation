@@ -9,8 +9,11 @@ Replaces the old Make.com scenarios. Daily flow:
            3. src/kaggle_trigger- push batch to Kaggle, SDXL img2img polish, pull masters,
                                   crop to pin/square/landscape, upload public to Drive
 every 30m  dispatcher.yml
-           src/dispatcher       - posts at most 1 item per platform when 3.5h cadence elapsed;
-                                  kill switch: Config tab paused=TRUE; evergreen reposts after 30d
+           src/dispatcher       - posts at most 1 item per platform (Pinterest, Facebook) when
+                                  3.5h cadence elapsed via Zernio; kill switch: Config tab
+                                  paused=TRUE; evergreen reposts after 30d. Instagram is not
+                                  posted directly - it rides Facebook's native Page-to-Instagram
+                                  auto-crosspost setting (Page Settings > Instagram).
 Mon 09:00  weekly_digest.yml
            src/digest           - Telegram summary: posts/platform, errors, queue depth
 ```
@@ -31,9 +34,14 @@ Mon 09:00  weekly_digest.yml
 3. Kaggle: verify phone (needed for GPU+internet), put username/key in env,
    edit `kaggle/kernel-metadata.json` with your username, then run
    `python -m src.kaggle_trigger` once to create the dataset + kernel.
-4. Pinterest: token with `pins:write` scope, board id in env.
-5. Meta: Page access token with `pages_manage_posts` + `instagram_content_publish`,
-   Page id and IG business user id in env. (Long-lived token expires ~60 days.)
+4. Zernio (zernio.com): connect Pinterest + Facebook accounts via their dashboard
+   (no developer app review needed - Zernio is already the approved app). Grab
+   the API key from settings, and account IDs by running `python -m src.publishers.zernio`
+   once connected (lists all accounts with their `accountId`).
+5. Meta: in Facebook Page Settings > Instagram, enable "Show your Facebook posts
+   on Instagram" so posts auto-crosspost - verify this actually fires before
+   relying on it; if flaky, add Instagram as a 3rd Zernio account ($6/mo) instead
+   and post to it directly.
 6. GitHub: push this repo, add all `.env` values as Actions secrets
    (names match `.env.example`).
 
