@@ -40,7 +40,26 @@ ZERNIO_ACCOUNT_IDS = {
 PINTEREST_BOARD_ID = env("PINTEREST_BOARD_ID")
 META_PAGE_ID = env("META_PAGE_ID")
 
+ASSETS_BASE_URL = env(
+    "ASSETS_BASE_URL",
+    "https://raw.githubusercontent.com/shahriar3174/affiliate-automation/main/assets/images",
+)
+
+KAGGLE_USERNAME = env("KAGGLE_USERNAME")
+KAGGLE_API_TOKEN = env("KAGGLE_API_TOKEN")
 KAGGLE_NOTEBOOK_SLUG = env("KAGGLE_NOTEBOOK_SLUG")
+
+
+def ensure_kaggle_auth():
+    """Write the Kaggle access token to the location the kaggle CLI reads,
+    so subprocess calls to `kaggle` authenticate without extra setup."""
+    from pathlib import Path
+    kaggle_dir = Path.home() / ".kaggle"
+    kaggle_dir.mkdir(exist_ok=True)
+    token_file = kaggle_dir / "access_token"
+    if KAGGLE_API_TOKEN:
+        token_file.write_text(KAGGLE_API_TOKEN)
+        token_file.chmod(0o600)
 
 TELEGRAM_BOT_TOKEN = env("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = env("TELEGRAM_CHAT_ID")

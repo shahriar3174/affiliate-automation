@@ -1,5 +1,5 @@
 {
-  "id": "YOUR_KAGGLE_USERNAME/product-image-polish",
+  "id": "shahriar74/product-image-polish",
   "title": "product-image-polish",
   "code_file": "polish.py",
   "language": "python",
@@ -7,7 +7,7 @@
   "is_private": "true",
   "enable_gpu": "true",
   "enable_internet": "true",
-  "dataset_sources": ["YOUR_KAGGLE_USERNAME/product-batch-input"],
+  "dataset_sources": ["shahriar74/product-batch-input"],
   "competition_sources": [],
   "kernel_sources": []
 }
