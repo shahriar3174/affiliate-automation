@@ -1,0 +1,13 @@
+{
+  "id": "YOUR_KAGGLE_USERNAME/product-image-polish",
+  "title": "product-image-polish",
+  "code_file": "polish.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_internet": "true",
+  "dataset_sources": ["YOUR_KAGGLE_USERNAME/product-batch-input"],
+  "competition_sources": [],
+  "kernel_sources": []
+}

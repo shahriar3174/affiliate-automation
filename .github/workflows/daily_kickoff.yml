@@ -1,0 +1,35 @@
+name: Daily kickoff
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  kickoff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GOOGLE_CREDS_JSON: ${{ secrets.GOOGLE_CREDS_JSON }}
+      SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+      DRIVE_FOLDER_ID: ${{ secrets.DRIVE_FOLDER_ID }}
+      RAPIDAPI_KEYS: ${{ secrets.RAPIDAPI_KEYS }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      AFFILIATE_TAG_PINTEREST: ${{ secrets.AFFILIATE_TAG_PINTEREST }}
+      AFFILIATE_TAG_FACEBOOK: ${{ secrets.AFFILIATE_TAG_FACEBOOK }}
+      AFFILIATE_TAG_INSTAGRAM: ${{ secrets.AFFILIATE_TAG_INSTAGRAM }}
+      KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+      KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+      KAGGLE_NOTEBOOK_SLUG: ${{ secrets.KAGGLE_NOTEBOOK_SLUG }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Source products
+        run: python -m src.sourcing
+      - name: Generate content
+        run: python -m src.content_gen
+      - name: Kaggle image batch
+        run: python -m src.kaggle_trigger
